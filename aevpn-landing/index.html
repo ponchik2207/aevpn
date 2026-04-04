@@ -1,0 +1,2148 @@
+﻿<!DOCTYPE html>
+<html lang="ru">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>aevpn — Быстрый и безопасный VPN</title>
+    <link rel="icon" type="image/png" href="static/logo.png">
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/css/bootstrap.min.css" rel="stylesheet">
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.1/font/bootstrap-icons.css" rel="stylesheet">
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800&display=swap" rel="stylesheet">
+    <link href="https://fonts.googleapis.com/css2?family=Press+Start+2P&display=swap" rel="stylesheet">
+    <link href="https://fonts.googleapis.com/css2?family=Silkscreen:wght@400;700&display=swap" rel="stylesheet">
+    <style>
+        :root {
+            --primary: #000000;
+            --primary-light: #333333;
+            --secondary: #666666;
+            --accent: #999999;
+            --dark: #0a0a0a;
+            --white: #ffffff;
+            --gray-light: #f5f5f5;
+            --gray: #888888;
+        }
+
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: 'Inter', sans-serif;
+            background: var(--white);
+            color: var(--primary);
+            overflow-x: hidden;
+        }
+
+        /* Анимации */
+        @keyframes float {
+            0%, 100% { transform: translateY(0px); }
+            50% { transform: translateY(-20px); }
+        }
+
+        @keyframes fadeInUp {
+            from {
+                opacity: 0;
+                transform: translateY(40px);
+            }
+            to {
+                opacity: 1;
+                transform: translateY(0);
+            }
+        }
+
+        @keyframes fadeInDown {
+            from {
+                opacity: 0;
+                transform: translateY(-40px);
+            }
+            to {
+                opacity: 1;
+                transform: translateY(0);
+            }
+        }
+
+        @keyframes scaleIn {
+            from {
+                opacity: 0;
+                transform: scale(0.8);
+            }
+            to {
+                opacity: 1;
+                transform: scale(1);
+            }
+        }
+
+        @keyframes slideInLeft {
+            from {
+                opacity: 0;
+                transform: translateX(-60px);
+            }
+            to {
+                opacity: 1;
+                transform: translateX(0);
+            }
+        }
+
+        @keyframes slideInRight {
+            from {
+                opacity: 0;
+                transform: translateX(60px);
+            }
+            to {
+                opacity: 1;
+                transform: translateX(0);
+            }
+        }
+
+        @keyframes pulse-glow {
+            0%, 100% { box-shadow: 0 0 20px rgba(0, 0, 0, 0.1); }
+            50% { box-shadow: 0 0 40px rgba(0, 0, 0, 0.2); }
+        }
+
+        @keyframes gradient-shift {
+            0% { background-position: 0% 50%; }
+            50% { background-position: 100% 50%; }
+            100% { background-position: 0% 50%; }
+        }
+
+        @keyframes iconFloat {
+            0%, 100% { 
+                transform: translateY(0) rotate(0deg);
+                opacity: 0.3;
+            }
+            25% {
+                transform: translateY(-15px) rotate(5deg);
+                opacity: 0.5;
+            }
+            50% { 
+                transform: translateY(-25px) rotate(0deg);
+                opacity: 0.7;
+            }
+            75% {
+                transform: translateY(-15px) rotate(-5deg);
+                opacity: 0.5;
+            }
+        }
+
+        @keyframes shimmer {
+            0% { background-position: -1000px 0; }
+            100% { background-position: 1000px 0; }
+        }
+
+        @keyframes loaderFade {
+            0% { opacity: 1; }
+            100% { opacity: 0; visibility: hidden; }
+        }
+
+        /* Анимации для пиксельного логотипа ae */
+        @keyframes logoGlitch {
+            0%, 90%, 100% { 
+                transform: translate(0); 
+                filter: none;
+            }
+            91% { 
+                transform: translate(-2px, 1px); 
+                filter: hue-rotate(90deg) saturate(2);
+            }
+            92% { 
+                transform: translate(2px, -1px); 
+                filter: hue-rotate(-90deg) saturate(2);
+            }
+            93% { 
+                transform: translate(-1px, -1px); 
+                filter: hue-rotate(45deg);
+            }
+            94% { 
+                transform: translate(1px, 2px); 
+                filter: none;
+            }
+            95% { 
+                transform: translate(0); 
+            }
+        }
+
+        @keyframes logoScanline {
+            0% { background-position: 0 0; }
+            100% { background-position: 0 100%; }
+        }
+
+        @keyframes logoPulse {
+            0%, 100% { opacity: 1; }
+            50% { opacity: 0.85; }
+        }
+
+        @keyframes logoFadeIn {
+            from { opacity: 0; transform: scale(0.95); }
+            to { opacity: 1; transform: scale(1); }
+        }
+
+        @keyframes pixelFloat {
+            0%, 100% { transform: translateY(0px); opacity: 0.08; }
+            50% { transform: translateY(-15px); opacity: 0.15; }
+        }
+
+        @keyframes borderGlow {
+            0%, 100% { box-shadow: 0 0 20px rgba(0,0,0,0.05); }
+            50% { box-shadow: 0 0 40px rgba(0,0,0,0.12); }
+        }
+
+        .hero-logo-container {
+            position: relative;
+            display: inline-flex;
+            align-items: center;
+            gap: 20px;
+            animation: logoFadeIn 1.2s ease-out 0.3s backwards;
+        }
+
+        .hero-logo-img {
+            max-width: 320px;
+            width: 100%;
+            height: auto;
+            image-rendering: pixelated;
+            image-rendering: -moz-crisp-edges;
+            image-rendering: crisp-edges;
+            animation: logoGlitch 8s ease-in-out infinite, logoPulse 4s ease-in-out infinite;
+            filter: drop-shadow(0 10px 30px rgba(0,0,0,0.1));
+        }
+
+        .hero-logo-vpn-text {
+            font-family: 'Press Start 2P', cursive;
+            font-size: 2.5rem;
+            color: #000;
+            letter-spacing: 4px;
+            animation: logoGlitch 8s ease-in-out infinite, logoPulse 4s ease-in-out infinite;
+            text-shadow: 2px 2px 0 rgba(0,0,0,0.1);
+            white-space: nowrap;
+        }
+
+        .hero-logo-container::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: 0;
+            right: 0;
+            bottom: 0;
+            background: repeating-linear-gradient(
+                0deg,
+                transparent,
+                transparent 2px,
+                rgba(0,0,0,0.03) 2px,
+                rgba(0,0,0,0.03) 4px
+            );
+            pointer-events: none;
+            animation: logoScanline 8s linear infinite;
+            z-index: 1;
+        }
+
+        .hero-logo-glow {
+            position: absolute;
+            top: -20px;
+            left: -20px;
+            right: -20px;
+            bottom: -20px;
+            border-radius: 20px;
+            animation: borderGlow 3s ease-in-out infinite;
+            pointer-events: none;
+        }
+
+        .bg-pixel {
+            animation: pixelFloat 6s ease-in-out infinite;
+        }
+
+        /* Панель информации о сервере */
+        .server-info-panel {
+            position: fixed;
+            top: 50%;
+            left: 50%;
+            transform: translate(-50%, -50%) scale(0.9);
+            background: rgba(255, 255, 255, 0.98);
+            backdrop-filter: blur(20px);
+            border-radius: 20px;
+            padding: 2rem;
+            min-width: 320px;
+            max-width: 400px;
+            box-shadow: 0 25px 60px rgba(0, 0, 0, 0.3);
+            z-index: 1000;
+            opacity: 0;
+            visibility: hidden;
+            transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+        }
+
+        .server-info-panel.active {
+            opacity: 1;
+            visibility: visible;
+            transform: translate(-50%, -50%) scale(1);
+        }
+
+        .server-info-close {
+            position: absolute;
+            top: 15px;
+            right: 15px;
+            width: 32px;
+            height: 32px;
+            border: none;
+            background: rgba(0, 0, 0, 0.08);
+            border-radius: 50%;
+            cursor: pointer;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 1.2rem;
+            color: #666;
+            transition: all 0.2s;
+        }
+
+        .server-info-close:hover {
+            background: rgba(0, 0, 0, 0.15);
+            color: #000;
+        }
+
+        .server-info-flag {
+            font-size: 3rem;
+            margin-bottom: 0.5rem;
+        }
+
+        .server-info-country {
+            font-size: 1.5rem;
+            font-weight: 700;
+            color: #000;
+            margin-bottom: 0.25rem;
+        }
+
+        .server-info-city {
+            font-size: 1rem;
+            color: #666;
+            margin-bottom: 1rem;
+        }
+
+        .server-info-stats {
+            display: flex;
+            gap: 1.5rem;
+            margin-bottom: 1.5rem;
+        }
+
+        .server-stat {
+            text-align: center;
+        }
+
+        .server-stat-value {
+            font-size: 1.25rem;
+            font-weight: 700;
+            color: #000;
+        }
+
+        .server-stat-label {
+            font-size: 0.75rem;
+            color: #888;
+            text-transform: uppercase;
+            letter-spacing: 1px;
+        }
+
+        .server-info-status {
+            display: flex;
+            align-items: center;
+            gap: 0.5rem;
+            margin-bottom: 1.5rem;
+            padding: 0.75rem 1rem;
+            background: rgba(0, 200, 83, 0.1);
+            border-radius: 10px;
+        }
+
+        .server-status-dot {
+            width: 8px;
+            height: 8px;
+            background: #00c853;
+            border-radius: 50%;
+            animation: statusPulse 2s ease-in-out infinite;
+        }
+
+        @keyframes statusPulse {
+            0%, 100% { opacity: 1; }
+            50% { opacity: 0.5; }
+        }
+
+        .server-status-text {
+            font-size: 0.85rem;
+            color: #00c853;
+            font-weight: 600;
+        }
+
+        .server-connect-btn {
+            display: block;
+            width: 100%;
+            padding: 1rem;
+            background: #000;
+            color: #fff;
+            border: none;
+            border-radius: 12px;
+            font-size: 1rem;
+            font-weight: 600;
+            cursor: pointer;
+            text-decoration: none;
+            text-align: center;
+            transition: all 0.3s;
+        }
+
+        .server-connect-btn:hover {
+            background: #333;
+            transform: translateY(-2px);
+            box-shadow: 0 10px 25px rgba(0, 0, 0, 0.2);
+        }
+
+        .server-overlay {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: rgba(0, 0, 0, 0.5);
+            z-index: 999;
+            opacity: 0;
+            visibility: hidden;
+            transition: all 0.3s;
+        }
+
+        .server-overlay.active {
+            opacity: 1;
+            visibility: visible;
+        }
+
+        /* 3D-контейнер для планеты */
+        .hero-3d-container {
+            width: 100%;
+            height: 400px;
+            position: relative;
+            animation: logoFadeIn 1.2s ease-out 0.3s backwards;
+            background: transparent;
+        }
+
+        .hero-3d-container canvas {
+            display: block;
+            width: 100% !important;
+            height: 100% !important;
+        }
+
+        /* Глитч-текст для надписи ae vpn */
+        .glitch-text {
+            font-family: 'Press Start 2P', cursive;
+            font-size: 1.8rem;
+            color: #000;
+            position: absolute;
+            pointer-events: none;
+            white-space: nowrap;
+            animation: glitchText 3s ease-in-out infinite;
+            text-shadow: 
+                0.05em 0 0 rgba(255, 0, 0, 0.75),
+                -0.025em -0.05em 0 rgba(0, 255, 0, 0.75),
+                0.025em 0.05em 0 rgba(0, 0, 255, 0.75);
+        }
+
+        @keyframes glitchText {
+            0%, 85%, 100% {
+                transform: translate(0);
+                opacity: 1;
+            }
+            86% {
+                transform: translate(-2px, 1px);
+                opacity: 0.8;
+            }
+            87% {
+                transform: translate(2px, -1px);
+                opacity: 0.9;
+            }
+            88% {
+                transform: translate(-1px, -2px);
+                opacity: 0.7;
+            }
+            89% {
+                transform: translate(1px, 2px);
+                opacity: 1;
+            }
+            90% {
+                transform: translate(0);
+                opacity: 1;
+            }
+        }
+
+        /* Прелоадер */
+        .page-loader {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: var(--white);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            z-index: 9999;
+            animation: loaderFade 0.8s ease-out 2s forwards;
+        }
+
+        .loader-content {
+            text-align: center;
+        }
+
+        .loader-logo {
+            font-size: 3rem;
+            font-weight: 800;
+            background: linear-gradient(135deg, #000 0%, #444 100%);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            background-clip: text;
+            animation: scaleIn 0.6s ease-out;
+        }
+
+        .loader-bar {
+            width: 200px;
+            height: 3px;
+            background: var(--gray-light);
+            border-radius: 3px;
+            margin: 20px auto 0;
+            overflow: hidden;
+            position: relative;
+        }
+
+        .loader-bar::after {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: 0;
+            height: 100%;
+            width: 50%;
+            background: var(--primary);
+            animation: shimmer 1.5s infinite;
+        }
+
+        /* Анимация при скролле */
+        .animate-on-scroll {
+            opacity: 0;
+            transition: all 0.8s cubic-bezier(0.4, 0, 0.2, 1);
+        }
+
+        .animate-on-scroll.animated {
+            opacity: 1;
+        }
+
+        .fade-up { transform: translateY(40px); }
+        .fade-down { transform: translateY(-40px); }
+        .fade-left { transform: translateX(-40px); }
+        .fade-right { transform: translateX(40px); }
+        .scale-in { transform: scale(0.9); }
+
+        .animate-on-scroll.animated.fade-up,
+        .animate-on-scroll.animated.fade-down,
+        .animate-on-scroll.animated.fade-left,
+        .animate-on-scroll.animated.fade-right,
+        .animate-on-scroll.animated.scale-in {
+            transform: none;
+        }
+
+        /* Навигация */
+        .navbar {
+            background: rgba(10, 10, 10, 0.95);
+            backdrop-filter: blur(10px);
+            padding: 1rem 0;
+            border-bottom: 1px solid rgba(255,255,255,0.08);
+        }
+
+        .navbar-brand {
+            font-weight: 800;
+            font-size: 1.5rem;
+            color: #ffffff;
+            padding: 0;
+        }
+
+        .navbar-logo {
+            height: 40px;
+            width: auto;
+            transition: all 0.3s;
+        }
+
+        .navbar-logo:hover {
+            transform: scale(1.05);
+            filter: drop-shadow(0 0 10px rgba(255, 255, 255, 0.3));
+        }
+
+        .navbar-brand-text {
+            font-size: 1.45rem;
+            font-weight: 800;
+            color: #ffffff;
+            margin-left: 6px;
+            letter-spacing: 3px;
+        }
+
+        /* Глитч-эффект для ae в навбаре */
+        .navbar-ae-glitch {
+            font-size: 1.8rem;
+            font-weight: 800;
+            color: #ffffff;
+            position: relative;
+            display: inline-block;
+            animation: navbarGlitch 4s ease-in-out infinite;
+        }
+
+        .navbar-ae-glitch::before,
+        .navbar-ae-glitch::after {
+            content: attr(data-text);
+            position: absolute;
+            top: 0;
+            left: 0;
+            overflow: hidden;
+            color: #ffffff;
+        }
+
+        .navbar-ae-glitch::before {
+            animation: navbarGlitchRed 4s ease-in-out infinite;
+            clip-path: inset(0 0 60% 0);
+        }
+
+        .navbar-ae-glitch::after {
+            animation: navbarGlitchCyan 4s ease-in-out infinite;
+            clip-path: inset(60% 0 0 0);
+        }
+
+        @keyframes navbarGlitch {
+            0%, 85%, 95%, 100% {
+                transform: translate(0);
+                opacity: 1;
+            }
+            86% {
+                transform: translate(-3px, 1px);
+                opacity: 0.8;
+            }
+            87% {
+                transform: translate(3px, -1px);
+                opacity: 0.9;
+            }
+            88% {
+                transform: translate(-2px, 2px);
+                opacity: 0.7;
+            }
+            89% {
+                transform: translate(2px, -2px);
+                opacity: 1;
+            }
+            90% {
+                transform: translate(0);
+                opacity: 1;
+            }
+        }
+
+        @keyframes navbarGlitchRed {
+            0%, 85%, 95%, 100% {
+                transform: translate(0);
+            }
+            86% {
+                transform: translate(-4px, 0);
+            }
+            87% {
+                transform: translate(4px, 0);
+            }
+            88% {
+                transform: translate(-2px, 0);
+            }
+            89% {
+                transform: translate(2px, 0);
+            }
+            90% {
+                transform: translate(0);
+            }
+        }
+
+        @keyframes navbarGlitchCyan {
+            0%, 85%, 95%, 100% {
+                transform: translate(0);
+            }
+            86% {
+                transform: translate(4px, 0);
+            }
+            87% {
+                transform: translate(-4px, 0);
+            }
+            88% {
+                transform: translate(2px, 0);
+            }
+            89% {
+                transform: translate(-2px, 0);
+            }
+            90% {
+                transform: translate(0);
+            }
+        }
+
+        .nav-link {
+            color: rgba(255,255,255,0.7) !important;
+            font-weight: 500;
+            transition: color 0.3s;
+        }
+
+        .nav-link:hover {
+            color: #ffffff !important;
+        }
+
+        .btn-primary-gradient {
+            background: var(--primary);
+            color: var(--white);
+            border: none;
+            padding: 0.75rem 2rem;
+            border-radius: 50px;
+            font-weight: 600;
+            transition: all 0.3s;
+        }
+
+        .btn-primary-gradient:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 10px 30px rgba(0, 0, 0, 0.2);
+            background: var(--primary-light);
+        }
+
+        /* Hero секция */
+        .hero {
+            padding: 120px 0 80px;
+            position: relative;
+            overflow: hidden;
+            background: #0a0a0a;
+        }
+
+        .hero-video-bg {
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            object-fit: cover;
+            z-index: 0;
+            opacity: 0.4;
+        }
+
+        .hero::after {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: linear-gradient(180deg, rgba(10,10,10,0.6) 0%, rgba(10,10,10,0.85) 100%);
+            z-index: 1;
+        }
+
+        .hero .container {
+            position: relative;
+            z-index: 2;
+        }
+
+        .hero-title {
+            font-size: 3.5rem;
+            font-weight: 800;
+            line-height: 1.2;
+            margin-bottom: 1.5rem;
+            animation: fadeInUp 1s ease-out;
+            color: #ffffff;
+        }
+
+        .hero-title span {
+            position: relative;
+            display: inline-block;
+        }
+
+        .hero-title span::after {
+            content: '';
+            position: absolute;
+            bottom: 5px;
+            left: 0;
+            width: 100%;
+            height: 15px;
+            background: #ffffff;
+            opacity: 0.2;
+            z-index: -1;
+        }
+
+        .hero-subtitle {
+            font-size: 1.25rem;
+            color: rgba(255,255,255,0.7);
+            margin-bottom: 2.5rem;
+            max-width: 600px;
+            animation: fadeInUp 1s ease-out 0.2s backwards;
+        }
+
+        .hero-image {
+            animation: float 6s ease-in-out infinite;
+        }
+
+        .hero-image svg {
+            max-width: 100%;
+            filter: drop-shadow(0 20px 40px rgba(0, 0, 0, 0.1));
+        }
+
+        .hero-btns {
+            animation: fadeInUp 1s ease-out 0.4s backwards;
+        }
+
+        /* Статистика */
+        .stats {
+            padding: 60px 0;
+            background: var(--white);
+            border-top: 1px solid rgba(0,0,0,0.05);
+            border-bottom: 1px solid rgba(0,0,0,0.05);
+        }
+
+        .stat-item {
+            text-align: center;
+        }
+
+        .stat-number {
+            font-size: 2.5rem;
+            font-weight: 800;
+            color: var(--primary);
+        }
+
+        .stat-label {
+            color: var(--secondary);
+            font-size: 0.9rem;
+            margin-top: 0.5rem;
+        }
+
+        /* Преимущества */
+        .features {
+            padding: 100px 0;
+            background: var(--white);
+        }
+
+        .section-title {
+            font-size: 2.5rem;
+            font-weight: 700;
+            text-align: center;
+            margin-bottom: 1rem;
+        }
+
+        .section-subtitle {
+            text-align: center;
+            color: var(--secondary);
+            margin-bottom: 4rem;
+        }
+
+        .feature-card {
+            background: var(--white);
+            border: 1px solid rgba(0,0,0,0.08);
+            border-radius: 20px;
+            padding: 2rem;
+            height: 100%;
+            transition: all 0.4s cubic-bezier(0.4, 0, 0.2, 1);
+            position: relative;
+            overflow: hidden;
+        }
+
+        .feature-card::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: linear-gradient(135deg, rgba(0,0,0,0.02) 0%, transparent 100%);
+            opacity: 0;
+            transition: opacity 0.4s;
+        }
+
+        .feature-card:hover::before {
+            opacity: 1;
+        }
+
+        .feature-card:hover {
+            transform: translateY(-10px);
+            border-color: rgba(0, 0, 0, 0.2);
+            box-shadow: 0 20px 40px rgba(0,0,0,0.08);
+        }
+
+        .feature-icon {
+            width: 60px;
+            height: 60px;
+            background: var(--primary);
+            border-radius: 15px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 1.5rem;
+            margin-bottom: 1.5rem;
+            color: var(--white);
+            transition: all 0.4s cubic-bezier(0.4, 0, 0.2, 1);
+        }
+
+        .feature-card:hover .feature-icon {
+            transform: scale(1.1) rotate(5deg);
+            background: var(--primary-light);
+        }
+
+        .feature-title {
+            font-size: 1.25rem;
+            font-weight: 600;
+            margin-bottom: 0.75rem;
+        }
+
+        .feature-desc {
+            color: var(--secondary);
+            line-height: 1.6;
+        }
+
+        /* Тарифы */
+        .pricing {
+            padding: 100px 0;
+            background: var(--gray-light);
+        }
+
+        .pricing-card {
+            background: var(--white);
+            border: 1px solid rgba(0,0,0,0.08);
+            border-radius: 24px;
+            padding: 2.5rem;
+            height: 100%;
+            position: relative;
+            transition: all 0.4s cubic-bezier(0.4, 0, 0.2, 1);
+        }
+
+        .pricing-card:hover {
+            transform: translateY(-10px);
+            box-shadow: 0 20px 40px rgba(0,0,0,0.08);
+        }
+
+        .pricing-card.popular {
+            border: 3px solid transparent;
+            background-origin: border-box;
+            background-clip: padding-box, border-box;
+            background-image: linear-gradient(var(--white), var(--white)), linear-gradient(135deg, #00c853, #00e5ff, #651fff, #00c853);
+            background-size: 100% 100%, 300% 300%;
+            animation: gradientBorder 4s ease infinite;
+            box-shadow: 0 0 60px rgba(0, 200, 83, 0.1);
+        }
+
+        @keyframes gradientBorder {
+            0% { background-position: 0% 0%, 0% 50%; }
+            50% { background-position: 0% 0%, 100% 50%; }
+            100% { background-position: 0% 0%, 0% 50%; }
+        }
+
+        .pricing-card.popular:hover {
+            box-shadow: 0 25px 60px rgba(0, 200, 83, 0.15);
+        }
+
+        .popular-badge {
+            position: absolute;
+            top: -12px;
+            left: 50%;
+            transform: translateX(-50%);
+            background: var(--primary);
+            color: var(--white);
+            padding: 0.5rem 1.5rem;
+            border-radius: 50px;
+            font-size: 0.85rem;
+            font-weight: 600;
+        }
+
+        .pricing-name {
+            font-size: 1.5rem;
+            font-weight: 700;
+            margin-bottom: 0.5rem;
+        }
+
+        .pricing-price {
+            font-size: 3rem;
+            font-weight: 800;
+            margin: 1.5rem 0;
+            color: var(--primary);
+        }
+
+        .pricing-current {
+            font-size: 8rem;
+            font-weight: 800;
+            transition: all 0.3s;
+        }
+
+        .pricing-price span {
+            font-size: 1rem;
+            color: var(--secondary);
+            font-weight: 400;
+        }
+
+        .pricing-old-price {
+            display: inline-block;
+            font-size: 1.1rem;
+            color: #999;
+            text-decoration: line-through;
+            margin-bottom: 0.5rem;
+            font-weight: 400;
+        }
+
+        .pricing-features {
+            list-style: none;
+            margin: 2rem 0;
+        }
+
+        .pricing-features li {
+            padding: 0.75rem 0;
+            border-bottom: 1px solid rgba(0,0,0,0.05);
+            display: flex;
+            align-items: center;
+            gap: 0.75rem;
+        }
+
+        .pricing-features li i {
+            color: var(--primary);
+        }
+
+        .pricing-features li:last-child {
+            border-bottom: none;
+        }
+
+        /* Как это работает */
+        .how-it-works {
+            padding: 100px 0;
+            background: var(--white);
+        }
+
+        .step-card {
+            text-align: center;
+            padding: 2rem;
+        }
+
+        .step-number {
+            width: 80px;
+            height: 80px;
+            background: var(--primary);
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 2rem;
+            font-weight: 800;
+            color: var(--white);
+            margin: 0 auto 1.5rem;
+            transition: all 0.4s cubic-bezier(0.4, 0, 0.2, 1);
+        }
+
+        .step-card:hover .step-number {
+            transform: scale(1.1);
+            box-shadow: 0 15px 30px rgba(0, 0, 0, 0.2);
+        }
+
+        .step-title {
+            font-size: 1.25rem;
+            font-weight: 600;
+            margin-bottom: 0.75rem;
+        }
+
+        .step-desc {
+            color: var(--secondary);
+        }
+
+        /* Отзывы */
+        .testimonials {
+            padding: 100px 0;
+            background: var(--gray-light);
+        }
+
+        .testimonial-card {
+            background: var(--white);
+            border: 1px solid rgba(0,0,0,0.08);
+            border-radius: 20px;
+            padding: 2rem;
+            height: 100%;
+            transition: all 0.4s cubic-bezier(0.4, 0, 0.2, 1);
+        }
+
+        .testimonial-card:hover {
+            transform: translateY(-5px);
+            box-shadow: 0 20px 40px rgba(0,0,0,0.08);
+        }
+
+        .testimonial-stars {
+            color: var(--primary);
+            margin-bottom: 1rem;
+        }
+
+        .testimonial-text {
+            font-size: 1.1rem;
+            line-height: 1.7;
+            margin-bottom: 1.5rem;
+            color: var(--primary-light);
+        }
+
+        .testimonial-author {
+            display: flex;
+            align-items: center;
+            gap: 1rem;
+        }
+
+        .testimonial-avatar {
+            width: 50px;
+            height: 50px;
+            background: var(--primary);
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-weight: 700;
+            color: var(--white);
+        }
+
+        .testimonial-info h5 {
+            font-size: 1rem;
+            font-weight: 600;
+            margin-bottom: 0.25rem;
+        }
+
+        .testimonial-info p {
+            color: var(--secondary);
+            font-size: 0.85rem;
+            margin: 0;
+        }
+
+        /* FAQ */
+        .faq {
+            padding: 100px 0;
+            background: var(--white);
+        }
+
+        .accordion-item {
+            background: var(--white);
+            border: 1px solid rgba(0,0,0,0.1) !important;
+            margin-bottom: 1rem;
+            border-radius: 15px !important;
+            overflow: hidden;
+            transition: all 0.3s;
+        }
+
+        .accordion-item:hover {
+            box-shadow: 0 5px 20px rgba(0,0,0,0.05);
+        }
+
+        .accordion-button {
+            background: transparent;
+            color: var(--primary);
+            font-weight: 600;
+            padding: 1.5rem;
+            border: none;
+        }
+
+        .accordion-button:not(.collapsed) {
+            background: var(--gray-light);
+            color: var(--primary);
+            box-shadow: none;
+        }
+
+        .accordion-button:focus {
+            box-shadow: none;
+        }
+
+        .accordion-button::after {
+            filter: invert(1);
+            opacity: 0.5;
+        }
+
+        .accordion-body {
+            color: var(--secondary);
+            padding: 0 1.5rem 1.5rem;
+            line-height: 1.7;
+        }
+
+        /* CTA секция */
+        .cta {
+            padding: 100px 0;
+            position: relative;
+            overflow: hidden;
+            background: var(--white);
+        }
+
+        .cta-box {
+            background: var(--primary);
+            border-radius: 30px;
+            padding: 4rem;
+            text-align: center;
+            position: relative;
+            overflow: hidden;
+        }
+
+        .cta-box::before {
+            content: '';
+            position: absolute;
+            top: -50%;
+            left: -50%;
+            width: 200%;
+            height: 200%;
+            background: radial-gradient(circle, rgba(255,255,255,0.1) 0%, transparent 60%);
+            animation: gradient-shift 10s ease infinite;
+        }
+
+        .cta-title {
+            font-size: 2.5rem;
+            font-weight: 800;
+            margin-bottom: 1rem;
+            position: relative;
+            color: var(--white);
+        }
+
+        .cta-subtitle {
+            font-size: 1.2rem;
+            opacity: 0.9;
+            margin-bottom: 2rem;
+            position: relative;
+            color: rgba(255,255,255,0.9);
+        }
+
+        .btn-light-gradient {
+            background: var(--white);
+            color: var(--primary);
+            border: none;
+            padding: 1rem 3rem;
+            border-radius: 50px;
+            font-weight: 700;
+            font-size: 1.1rem;
+            transition: all 0.3s;
+            position: relative;
+        }
+
+        .btn-light-gradient:hover {
+            transform: translateY(-3px);
+            box-shadow: 0 15px 40px rgba(0,0,0,0.3);
+        }
+
+        /* Футер */
+        footer {
+            background: var(--dark);
+            padding: 60px 0 30px;
+            border-top: 1px solid rgba(0,0,0,0.1);
+        }
+
+        .footer-brand {
+            font-size: 1.5rem;
+            font-weight: 800;
+            color: var(--white);
+            margin-bottom: 1rem;
+        }
+
+        .footer-desc {
+            color: var(--gray);
+            margin-bottom: 1.5rem;
+        }
+
+        .footer-title {
+            font-size: 1rem;
+            font-weight: 600;
+            margin-bottom: 1.5rem;
+            color: var(--white);
+        }
+
+        .footer-links {
+            list-style: none;
+        }
+
+        .footer-links li {
+            margin-bottom: 0.75rem;
+        }
+
+        .footer-links a {
+            color: var(--gray);
+            text-decoration: none;
+            transition: color 0.3s;
+        }
+
+        .footer-links a:hover {
+            color: var(--white);
+        }
+
+        .social-links {
+            display: flex;
+            gap: 1rem;
+        }
+
+        .social-links a {
+            width: 40px;
+            height: 40px;
+            background: rgba(255,255,255,0.1);
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            color: var(--white);
+            transition: all 0.3s;
+        }
+
+        .social-links a:hover {
+            background: var(--white);
+            color: var(--primary);
+            transform: translateY(-3px);
+        }
+
+        .footer-bottom {
+            border-top: 1px solid rgba(255,255,255,0.1);
+            padding-top: 30px;
+            margin-top: 40px;
+            text-align: center;
+            color: var(--gray);
+        }
+
+        /* Секция "Как работает aevpn" */
+        .how-it-works-map {
+            padding: 100px 0;
+            background: #0a0a0a;
+            position: relative;
+            overflow: hidden;
+        }
+
+        .how-it-works-map .section-title {
+            color: #ffffff;
+        }
+
+        .how-it-works-map .section-subtitle {
+            color: rgba(255,255,255,0.6);
+        }
+
+        .map-container {
+            width: 100%;
+            height: 600px;
+            position: relative;
+            border-radius: 20px;
+            overflow: hidden;
+            background: #050505;
+            border: 1px solid rgba(255,255,255,0.1);
+        }
+
+        .map-container canvas {
+            display: block;
+            width: 100% !important;
+            height: 100% !important;
+        }
+
+        .map-steps {
+            display: grid;
+            grid-template-columns: repeat(4, 1fr);
+            gap: 2rem;
+            margin-top: 3rem;
+        }
+
+        .map-step {
+            text-align: center;
+            padding: 2rem 1.5rem;
+            background: rgba(255,255,255,0.03);
+            border: 1px solid rgba(255,255,255,0.08);
+            border-radius: 16px;
+            transition: all 0.3s;
+        }
+
+        .map-step:hover {
+            background: rgba(255,255,255,0.06);
+            border-color: rgba(255,255,255,0.15);
+            transform: translateY(-5px);
+        }
+
+        .map-step-icon {
+            width: 60px;
+            height: 60px;
+            background: #fff;
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            margin: 0 auto 1.5rem;
+            font-size: 1.5rem;
+        }
+
+        .map-step-title {
+            font-size: 1.1rem;
+            font-weight: 600;
+            color: #fff;
+            margin-bottom: 0.75rem;
+        }
+
+        .map-step-desc {
+            font-size: 0.9rem;
+            color: rgba(255,255,255,0.6);
+            line-height: 1.6;
+        }
+
+        /* Адаптивность */
+        @media (max-width: 768px) {
+            .hero-title {
+                font-size: 2.5rem;
+            }
+
+            .section-title {
+                font-size: 2rem;
+            }
+
+            .cta-box {
+                padding: 2rem;
+            }
+
+            .cta-title {
+                font-size: 1.75rem;
+            }
+
+            .stat-number {
+                font-size: 2rem;
+            }
+
+            .hero-logo-container {
+                flex-direction: column;
+                gap: 10px;
+            }
+
+            .hero-logo-img {
+                max-width: 220px;
+            }
+
+            .hero-logo-vpn-text {
+                font-size: 1.5rem;
+            }
+
+            .map-container {
+                height: 450px;
+            }
+        }
+
+        @media (max-width: 576px) {
+            .map-container {
+                height: 400px;
+            }
+        }
+    </style>
+</head>
+<body>
+    <!-- Прелоадер -->
+    <div class="page-loader">
+        <div class="loader-content">
+            <div class="loader-logo">
+                <i class="bi bi-shield-check me-2"></i>aevpn
+            </div>
+            <div class="loader-bar"></div>
+        </div>
+    </div>
+
+    <!-- Навигация -->
+    <nav class="navbar navbar-expand-lg fixed-top">
+        <div class="container">
+            <a class="navbar-brand" href="#">
+                <span class="navbar-ae-glitch" data-text="ae">ae</span>
+                <span class="navbar-brand-text">VPN</span>
+            </a>
+            <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarNav">
+                <span class="bi bi-list text-light"></span>
+            </button>
+            <div class="collapse navbar-collapse" id="navbarNav">
+                <ul class="navbar-nav ms-auto align-items-center">
+                    <li class="nav-item"><a class="nav-link" href="#features">Преимущества</a></li>
+                    <li class="nav-item"><a class="nav-link" href="#pricing">Тарифы</a></li>
+                    <li class="nav-item"><a class="nav-link" href="#how-it-works">Как это работает</a></li>
+                    <li class="nav-item"><a class="nav-link" href="#faq">FAQ</a></li>
+                    <li class="nav-item ms-lg-3">
+                        <a class="btn btn-primary-gradient" href="#pricing">
+                            Начать бесплатно
+                        </a>
+                    </li>
+                </ul>
+            </div>
+        </div>
+    </nav>
+
+    <!-- Hero секция -->
+    <section class="hero">
+        <video class="hero-video-bg" autoplay muted loop playsinline>
+            <source src="bg-video.mp4" type="video/mp4">
+        </video>
+        <div class="container">
+            <div class="row align-items-center">
+                <div class="col-lg-6">
+                    <h1 class="hero-title">
+                        Интернет без границ с <span>aevpn</span>
+                    </h1>
+                    <p class="hero-subtitle">
+                        Быстрый, безопасный и анонимный доступ к любому контенту. 
+                        Защитите свои данные и обходите блокировки в один клик.
+                    </p>
+                    <div class="d-flex flex-wrap gap-3 hero-btns">
+                        <a href="#pricing" class="btn btn-primary-gradient btn-lg">
+                            <i class="bi bi-rocket-takeoff me-2"></i>Попробовать бесплатно
+                        </a>
+                        <a href="#features" class="btn btn-outline-dark btn-lg rounded-pill px-4">
+                            <i class="bi bi-play-circle me-2"></i>Узнать больше
+                        </a>
+                    </div>
+                </div>
+                <div class="col-lg-6 text-center hero-image">
+                    <div id="planet-container" class="hero-3d-container"></div>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- Статистика -->
+    <section class="stats">
+        <div class="container">
+            <div class="row">
+                <div class="col-6 col-lg-3 stat-item">
+                    <div class="stat-number" data-count="100">0</div>
+                    <div class="stat-label">Серверов</div>
+                </div>
+                <div class="col-6 col-lg-3 stat-item">
+                    <div class="stat-number" data-count="99">0</div>
+                    <div class="stat-label">% Uptime</div>
+                </div>
+                <div class="col-6 col-lg-3 stat-item">
+                    <div class="stat-number" data-count="24">0</div>
+                    <div class="stat-label">/ 7 Поддержка</div>
+                </div>
+                <div class="col-6 col-lg-3 stat-item">
+                    <div class="stat-number" data-count="0">0</div>
+                    <div class="stat-label">Логов активности</div>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- Преимущества -->
+    <section id="features" class="features">
+        <div class="container">
+            <h2 class="section-title">Почему выбирают aevpn</h2>
+            <p class="section-subtitle">Технологии нового поколения для вашей безопасности</p>
+            <div class="row g-4">
+                <div class="col-md-6 col-lg-4">
+                    <div class="feature-card">
+                        <div class="feature-icon">
+                            <i class="bi bi-lightning-charge"></i>
+                        </div>
+                        <h3 class="feature-title">Молниеносная скорость</h3>
+                        <p class="feature-desc">
+                            Оптимизированные серверы обеспечивают максимальную скорость 
+                            для стриминга, игр и загрузки без задержек.
+                        </p>
+                    </div>
+                </div>
+                <div class="col-md-6 col-lg-4">
+                    <div class="feature-card">
+                        <div class="feature-icon">
+                            <i class="bi bi-shield-lock"></i>
+                        </div>
+                        <h3 class="feature-title">Военное шифрование</h3>
+                        <p class="feature-desc">
+                            AES-256 шифрование защищает ваши данные от любых угроз. 
+                            Ваша приватность под надёжной защитой.
+                        </p>
+                    </div>
+                </div>
+                <div class="col-md-6 col-lg-4">
+                    <div class="feature-card">
+                        <div class="feature-icon">
+                            <i class="bi bi-geo-alt"></i>
+                        </div>
+                        <h3 class="feature-title">50+ стран мира</h3>
+                        <p class="feature-desc">
+                            Доступ к серверам по всему миру. Обходите географические 
+                            ограничения и получайте контент из любой точки.
+                        </p>
+                    </div>
+                </div>
+                <div class="col-md-6 col-lg-4">
+                    <div class="feature-card">
+                        <div class="feature-icon">
+                            <i class="bi bi-phone"></i>
+                        </div>
+                        <h3 class="feature-title">Все устройства</h3>
+                        <p class="feature-desc">
+                            Единая подписка для всех устройств: Windows, Mac, iOS, 
+                            Android, Linux и роутеры.
+                        </p>
+                    </div>
+                </div>
+                <div class="col-md-6 col-lg-4">
+                    <div class="feature-card">
+                        <div class="feature-icon">
+                            <i class="bi bi-eye-slash"></i>
+                        </div>
+                        <h3 class="feature-title">Полная анонимность</h3>
+                        <p class="feature-desc">
+                            Никаких логов вашей активности. Мы не храним и не передаём 
+                            данные третьим лицам.
+                        </p>
+                    </div>
+                </div>
+                <div class="col-md-6 col-lg-4">
+                    <div class="feature-card">
+                        <div class="feature-icon">
+                            <i class="bi bi-headset"></i>
+                        </div>
+                        <h3 class="feature-title">Поддержка 24/7</h3>
+                        <p class="feature-desc">
+                            Наша команда поддержки всегда готова помочь вам 
+                            в любое время суток через чат или email.
+                        </p>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- Как работает aevpn -->
+    <section class="how-it-works-map">
+        <div class="container">
+            <h2 class="section-title">Как работает aevpn</h2>
+            <p class="section-subtitle">Ваши данные под надёжной защитой</p>
+            <div id="world-map-container" class="map-container"></div>
+        </div>
+    </section>
+
+    <!-- Тарифы -->
+    <section id="pricing" class="pricing">
+        <div class="container">
+            <h2 class="section-title">Один тариф — всё включено</h2>
+            <p class="section-subtitle">Никаких ограничений. Платите только за то, что вам нужно.</p>
+            <div class="row g-4 justify-content-center">
+                <div class="col-lg-5 col-md-8">
+                    <div class="pricing-card popular">
+                        <div class="popular-badge">Единственный</div>
+                        <h3 class="pricing-name">Месяц</h3>
+                        <div class="pricing-old-price">150₽</div>
+                        <div class="pricing-price">
+                            <span class="pricing-current" data-target="80">0</span>₽<span>/мес</span>
+                        </div>
+                        <p class="text-muted mb-3">Просто, честно и без переплат</p>
+                        <ul class="pricing-features">
+                            <li><i class="bi bi-globe2"></i> Все серверы по всему миру</li>
+                            <li><i class="bi bi-infinity"></i> Безлимитный трафик</li>
+                            <li><i class="bi bi-phone"></i> Любое количество устройств</li>
+                            <li><i class="bi bi-chat-dots"></i> Поддержка 24/7</li>
+                            <li><i class="bi bi-lightning-charge"></i> Мгновенная активация</li>
+                        </ul>
+                        <a href="https://t.me/aevpn_ai_bot" target="_blank" class="btn btn-primary-gradient w-100 py-3">
+                            <i class="bi bi-telegram me-2"></i>Оформить через Telegram
+                        </a>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- Как это работает -->
+    <section id="how-it-works" class="how-it-works">
+        <div class="container">
+            <h2 class="section-title">Начать за 3 шага</h2>
+            <p class="section-subtitle">Простая настройка для быстрого старта</p>
+            <div class="row">
+                <div class="col-md-4 step-card">
+                    <div class="step-number">1</div>
+                    <h3 class="step-title">Выберите тариф</h3>
+                    <p class="step-desc">
+                        Подберите подходящий план и создайте аккаунт за пару минут
+                    </p>
+                </div>
+                <div class="col-md-4 step-card">
+                    <div class="step-number">2</div>
+                    <h3 class="step-title">Откройте Telegram-бот</h3>
+                    <p class="step-desc">
+                        Перейдите в @aevpn_ai_bot и получите ключ доступа за секунды
+                    </p>
+                </div>
+                <div class="col-md-4 step-card">
+                    <div class="step-number">3</div>
+                    <h3 class="step-title">Подключитесь</h3>
+                    <p class="step-desc">
+                        Выберите сервер и наслаждайтесь свободным интернетом
+                    </p>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- Отзывы -->
+    <section class="testimonials">
+        <div class="container">
+            <h2 class="section-title">Что говорят пользователи</h2>
+            <p class="section-subtitle">Реальные отзывы наших клиентов</p>
+            <div class="row g-4">
+                <div class="col-lg-4">
+                    <div class="testimonial-card">
+                        <div class="testimonial-stars">
+                            <i class="bi bi-star-fill"></i>
+                            <i class="bi bi-star-fill"></i>
+                            <i class="bi bi-star-fill"></i>
+                            <i class="bi bi-star-fill"></i>
+                            <i class="bi bi-star-fill"></i>
+                        </div>
+                        <p class="testimonial-text">
+                            «Долго сидел на HitVPN, терпел лаги. С aevpn всё летает.
+                            Даже в час пик скорость отличная. HitVPN и рядом не было.»
+                        </p>
+                        <div class="testimonial-author">
+                            <div class="testimonial-avatar">А</div>
+                            <div class="testimonial-info">
+                                <h5>Александр Н.</h5>
+                                <p>Электросталь</p>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                <div class="col-lg-4">
+                    <div class="testimonial-card">
+                        <div class="testimonial-stars">
+                            <i class="bi bi-star-fill"></i>
+                            <i class="bi bi-star-fill"></i>
+                            <i class="bi bi-star-fill"></i>
+                            <i class="bi bi-star-fill"></i>
+                            <i class="bi bi-star-fill"></i>
+                        </div>
+                        <p class="testimonial-text">
+                            «Наконец-то могу смотреть любимый сериал без тормозов.
+                            aevpn работает идеально на всех устройствах.»
+                        </p>
+                        <div class="testimonial-author">
+                            <div class="testimonial-avatar">Е</div>
+                            <div class="testimonial-info">
+                                <h5>Елена К.</h5>
+                                <p>Санкт-Петербург</p>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                <div class="col-lg-4">
+                    <div class="testimonial-card">
+                        <div class="testimonial-stars">
+                            <i class="bi bi-star-fill"></i>
+                            <i class="bi bi-star-fill"></i>
+                            <i class="bi bi-star-fill"></i>
+                            <i class="bi bi-star-fill"></i>
+                            <i class="bi bi-star-fill"></i>
+                        </div>
+                        <p class="testimonial-text">
+                            «Использую для работы из-за границы. Доступ ко всем 
+                            ресурсам, безопасность на высоте. Спасибо!»
+                        </p>
+                        <div class="testimonial-author">
+                            <div class="testimonial-avatar">Д</div>
+                            <div class="testimonial-info">
+                                <h5>Дмитрий В.</h5>
+                                <p>Москва</p>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- FAQ -->
+    <section id="faq" class="faq">
+        <div class="container">
+            <h2 class="section-title">Частые вопросы</h2>
+            <p class="section-subtitle">Ответы на популярные вопросы</p>
+            <div class="row justify-content-center">
+                <div class="col-lg-8">
+                    <div class="accordion" id="faqAccordion">
+                        <div class="accordion-item">
+                            <h2 class="accordion-header">
+                                <button class="accordion-button" type="button" data-bs-toggle="collapse" data-bs-target="#faq1">
+                                    <i class="bi bi-question-circle me-2"></i>Как работает бесплатный период?
+                                </button>
+                            </h2>
+                            <div id="faq1" class="accordion-collapse collapse show" data-bs-parent="#faqAccordion">
+                                <div class="accordion-body">
+                                    Мы предоставляем 7 дней полного доступа ко всем функциям aevpn.
+                                    Карта не требуется для активации пробного периода.
+                                    После окончания вы можете выбрать любой тарифный план.
+                                </div>
+                            </div>
+                        </div>
+                        <div class="accordion-item">
+                            <h2 class="accordion-header">
+                                <button class="accordion-button collapsed" type="button" data-bs-toggle="collapse" data-bs-target="#faq2">
+                                    <i class="bi bi-question-circle me-2"></i>Можно ли использовать на нескольких устройствах?
+                                </button>
+                            </h2>
+                            <div id="faq2" class="accordion-collapse collapse" data-bs-parent="#faqAccordion">
+                                <div class="accordion-body">
+                                    Да! В зависимости от тарифа вы можете подключить от 5 до неограниченного 
+                                    количества устройств одновременно. Одно приложение работает на 
+                                    Windows, Mac, iOS, Android и Linux.
+                                </div>
+                            </div>
+                        </div>
+                        <div class="accordion-item">
+                            <h2 class="accordion-header">
+                                <button class="accordion-button collapsed" type="button" data-bs-toggle="collapse" data-bs-target="#faq3">
+                                    <i class="bi bi-question-circle me-2"></i>Гарантируется ли возврат средств?
+                                </button>
+                            </h2>
+                            <div id="faq3" class="accordion-collapse collapse" data-bs-parent="#faqAccordion">
+                                <div class="accordion-body">
+                                    Мы предлагаем 30-дневную гарантию возврата денег. Если aevpn
+                                    вам не подойдёт по любой причине, просто напишите в поддержку
+                                    и мы вернём полную сумму без вопросов.
+                                </div>
+                            </div>
+                        </div>
+                        <div class="accordion-item">
+                            <h2 class="accordion-header">
+                                <button class="accordion-button collapsed" type="button" data-bs-toggle="collapse" data-bs-target="#faq4">
+                                    <i class="bi bi-question-circle me-2"></i>Ведутся ли логи моей активности?
+                                </button>
+                            </h2>
+                            <div id="faq4" class="accordion-collapse collapse" data-bs-parent="#faqAccordion">
+                                <div class="accordion-body">
+                                    Нет, мы придерживаемся строгой политики No-Logs. aevpn не хранит
+                                    информацию о посещённых сайтах, IP-адресах или времени подключения.
+                                    Ваша приватность полностью защищена.
+                                </div>
+                            </div>
+                        </div>
+                        <div class="accordion-item">
+                            <h2 class="accordion-header">
+                                <button class="accordion-button collapsed" type="button" data-bs-toggle="collapse" data-bs-target="#faq5">
+                                    <i class="bi bi-question-circle me-2"></i>Какие способы оплаты доступны?
+                                </button>
+                            </h2>
+                            <div id="faq5" class="accordion-collapse collapse" data-bs-parent="#faqAccordion">
+                                <div class="accordion-body">
+                                    Мы принимаем банковские карты (Visa, MasterCard, Mir), криптовалюты 
+                                    (Bitcoin, Ethereum), электронные кошельки и другие платежные системы. 
+                                    Все транзакции полностью зашифрованы.
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- CTA секция -->
+    <section class="cta">
+        <div class="container">
+            <div class="cta-box">
+                <h2 class="cta-title">Готовы начать?</h2>
+                <p class="cta-subtitle">
+                    Подключитесь к aevpn через Telegram-бот за пару секунд
+                </p>
+                <a href="https://t.me/aevpn_ai_bot" target="_blank" class="btn btn-light-gradient btn-lg">
+                    <i class="bi bi-telegram me-2"></i>Открыть @aevpn_ai_bot
+                </a>
+            </div>
+        </div>
+    </section>
+
+    <!-- Футер -->
+    <footer>
+        <div class="container">
+            <div class="row g-4">
+                <div class="col-lg-4">
+                    <div class="footer-brand">
+                        <i class="bi bi-shield-check me-2"></i>aevpn
+                    </div>
+                    <p class="footer-desc">
+                        Быстрый и безопасный VPN для свободного доступа к интернету. 
+                        Ваша приватность — наш приоритет.
+                    </p>
+                    <div class="social-links">
+                        <a href="#"><i class="bi bi-telegram"></i></a>
+                        <a href="#"><i class="bi bi-twitter-x"></i></a>
+                        <a href="#"><i class="bi bi-instagram"></i></a>
+                        <a href="#"><i class="bi bi-youtube"></i></a>
+                    </div>
+                </div>
+                <div class="col-6 col-lg-2">
+                    <h5 class="footer-title">Продукт</h5>
+                    <ul class="footer-links">
+                        <li><a href="https://t.me/aevpn_ai_bot" target="_blank">Telegram-бот</a></li>
+                        <li><a href="#">Тарифы</a></li>
+                        <li><a href="#">Серверы</a></li>
+                        <li><a href="#">Для бизнеса</a></li>
+                    </ul>
+                </div>
+                <div class="col-6 col-lg-2">
+                    <h5 class="footer-title">Компания</h5>
+                    <ul class="footer-links">
+                        <li><a href="#">О нас</a></li>
+                        <li><a href="#">Блог</a></li>
+                        <li><a href="#">Карьера</a></li>
+                        <li><a href="#">Контакты</a></li>
+                    </ul>
+                </div>
+                <div class="col-6 col-lg-2">
+                    <h5 class="footer-title">Поддержка</h5>
+                    <ul class="footer-links">
+                        <li><a href="#">Помощь</a></li>
+                        <li><a href="#">FAQ</a></li>
+                        <li><a href="#">Статус</a></li>
+                        <li><a href="#">API</a></li>
+                    </ul>
+                </div>
+                <div class="col-6 col-lg-2">
+                    <h5 class="footer-title">Правовая информация</h5>
+                    <ul class="footer-links">
+                        <li><a href="#">Privacy</a></li>
+                        <li><a href="#">Terms</a></li>
+                        <li><a href="#">Cookies</a></li>
+                        <li><a href="#">DMCA</a></li>
+                    </ul>
+                </div>
+            </div>
+            <div class="footer-bottom">
+                <p>&copy; 2026 aevpn. Все права защищены.</p>
+            </div>
+        </div>
+    </footer>
+
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/js/bootstrap.bundle.min.js"></script>
+    <script src="static/js/map2d.js"></script>
+    <script>
+        // Анимация счётчиков
+        function animateCounters() {
+            const counters = document.querySelectorAll('.stat-number');
+            counters.forEach(counter => {
+                const target = parseInt(counter.getAttribute('data-count'));
+                let suffix = '+';
+                if (target === 99) suffix = '%';
+                else if (target === 0) suffix = '';
+                let current = 0;
+                const increment = target / 50;
+                const timer = setInterval(() => {
+                    current += increment;
+                    if (current >= target) {
+                        counter.textContent = target + suffix;
+                        clearInterval(timer);
+                    } else {
+                        counter.textContent = Math.floor(current) + suffix;
+                    }
+                }, 30);
+            });
+        }
+
+        // Запуск анимации при скролле
+        const statsSection = document.querySelector('.stats');
+        let animated = false;
+
+        const observer = new IntersectionObserver((entries) => {
+            entries.forEach(entry => {
+                if (entry.isIntersecting && !animated) {
+                    animated = true;
+                    animateCounters();
+                }
+            });
+        }, { threshold: 0.5 });
+
+        observer.observe(statsSection);
+
+        // Анимация при скролле для элементов
+        const animateElements = () => {
+            const elements = document.querySelectorAll('.feature-card, .pricing-card, .testimonial-card, .step-card');
+            const elementObserver = new IntersectionObserver((entries) => {
+                entries.forEach((entry, index) => {
+                    if (entry.isIntersecting) {
+                        setTimeout(() => {
+                            entry.target.style.opacity = '1';
+                            entry.target.style.transform = 'translateY(0)';
+                        }, index * 100);
+                        elementObserver.unobserve(entry.target);
+                    }
+                });
+            }, { threshold: 0.1 });
+
+            elements.forEach(el => {
+                el.style.opacity = '0';
+                el.style.transform = 'translateY(30px)';
+                el.style.transition = 'all 0.6s cubic-bezier(0.4, 0, 0.2, 1)';
+                elementObserver.observe(el);
+            });
+        };
+
+        animateElements();
+
+        // Анимация счётчика цены
+        function animatePriceCounter() {
+            const priceEl = document.querySelector('.pricing-current');
+            if (!priceEl) return;
+
+            let animated = false;
+
+            const observer = new IntersectionObserver((entries) => {
+                entries.forEach(entry => {
+                    if (entry.isIntersecting && !animated) {
+                        animated = true;
+                        const target = parseInt(priceEl.getAttribute('data-target'));
+                        let current = 0;
+                        const duration = 1500; // мс
+                        const increment = target / (duration / 16); // ~60fps
+
+                        const timer = setInterval(() => {
+                            current += increment;
+                            if (current >= target) {
+                                priceEl.textContent = target;
+                                clearInterval(timer);
+                            } else {
+                                priceEl.textContent = Math.floor(current);
+                            }
+                        }, 16);
+
+                        observer.unobserve(entry.target);
+                    }
+                });
+            }, { threshold: 0.5 });
+
+            observer.observe(priceEl);
+        }
+
+        animatePriceCounter();
+
+        // Плавный скролл для якорных ссылок
+        document.querySelectorAll('a[href^="#"]').forEach(anchor => {
+            anchor.addEventListener('click', function(e) {
+                e.preventDefault();
+                const target = document.querySelector(this.getAttribute('href'));
+                if (target) {
+                    target.scrollIntoView({
+                        behavior: 'smooth',
+                        block: 'start'
+                    });
+                }
+            });
+        });
+
+        // Закрытие мобильного меню при клике
+        document.querySelectorAll('.nav-link').forEach(link => {
+            link.addEventListener('click', () => {
+                const navbarCollapse = document.querySelector('.navbar-collapse');
+                if (navbarCollapse.classList.contains('show')) {
+                    bootstrap.Collapse.getInstance(navbarCollapse).hide();
+                }
+            });
+        });
+
+        // Удаление прелоадера после загрузки
+        window.addEventListener('load', () => {
+            setTimeout(() => {
+                const loader = document.querySelector('.page-loader');
+                if (loader) {
+                    loader.style.animation = 'loaderFade 0.8s ease-out forwards';
+                }
+            }, 2000);
+        });
+
+        // ===== 2D АНИМАЦИЯ В HERO СЕКЦИИ =====
+        (function() {
+            const container = document.getElementById('planet-container');
+            if (!container) return;
+
+            const canvas = document.createElement('canvas');
+            canvas.style.cssText = 'width: 100%; height: 100%; display: block;';
+            container.appendChild(canvas);
+
+            const ctx = canvas.getContext('2d');
+            let width, height, nodes = [], connections = [], flows = [];
+
+            function resize() {
+                const rect = container.getBoundingClientRect();
+                const dpr = Math.min(window.devicePixelRatio || 1, 2);
+                width = rect.width;
+                height = rect.height;
+                canvas.width = width * dpr;
+                canvas.height = height * dpr;
+                ctx.scale(dpr, dpr);
+                initNodes();
+            }
+
+            function initNodes() {
+                nodes = [];
+                const count = Math.min(20, Math.floor(width * height / 15000));
+                for (let i = 0; i < count; i++) {
+                    nodes.push({
+                        x: Math.random() * width,
+                        y: Math.random() * height,
+                        radius: 3 + Math.random() * 4,
+                        phase: Math.random() * Math.PI * 2,
+                        speed: 0.5 + Math.random() * 0.5,
+                    });
+                }
+                connections = [];
+                for (let i = 0; i < nodes.length; i++) {
+                    for (let j = i + 1; j < nodes.length; j++) {
+                        const dx = nodes[i].x - nodes[j].x;
+                        const dy = nodes[i].y - nodes[j].y;
+                        const dist = Math.sqrt(dx * dx + dy * dy);
+                        if (dist < 150) {
+                            connections.push([i, j]);
+                        }
+                    }
+                }
+                flows = [];
+                for (let i = 0; i < 8; i++) {
+                    const connIdx = Math.floor(Math.random() * connections.length);
+                    flows.push({
+                        connIdx,
+                        t: Math.random(),
+                        speed: 0.0005 + Math.random() * 0.0005,
+                    });
+                }
+            }
+
+            function animate() {
+                const time = performance.now();
+                ctx.clearRect(0, 0, width, height);
+
+                // Соединения
+                connections.forEach(([i, j]) => {
+                    const alpha = 0.15;
+                    ctx.beginPath();
+                    ctx.moveTo(nodes[i].x, nodes[i].y);
+                    ctx.lineTo(nodes[j].x, nodes[j].y);
+                    ctx.strokeStyle = `rgba(255, 255, 255, ${alpha})`;
+                    ctx.lineWidth = 1;
+                    ctx.stroke();
+                });
+
+                // Потоки
+                flows.forEach(flow => {
+                    flow.t += flow.speed;
+                    if (flow.t > 1) flow.t = 0;
+                    const [i, j] = connections[flow.connIdx];
+                    const x = nodes[i].x + (nodes[j].x - nodes[i].x) * flow.t;
+                    const y = nodes[i].y + (nodes[j].y - nodes[i].y) * flow.t;
+                    ctx.beginPath();
+                    ctx.arc(x, y, 2, 0, Math.PI * 2);
+                    ctx.fillStyle = '#00ff88';
+                    ctx.shadowColor = '#00ff88';
+                    ctx.shadowBlur = 8;
+                    ctx.fill();
+                    ctx.shadowBlur = 0;
+                });
+
+                // Узлы
+                nodes.forEach(node => {
+                    const pulse = Math.sin(time * 0.002 * node.speed + node.phase) * 0.3 + 0.7;
+                    const glowRadius = node.radius * 2 * pulse;
+                    const gradient = ctx.createRadialGradient(node.x, node.y, 0, node.x, node.y, glowRadius);
+                    gradient.addColorStop(0, `rgba(136, 204, 255, ${0.6 * pulse})`);
+                    gradient.addColorStop(1, 'rgba(0, 0, 0, 0)');
+                    ctx.beginPath();
+                    ctx.arc(node.x, node.y, glowRadius, 0, Math.PI * 2);
+                    ctx.fillStyle = gradient;
+                    ctx.fill();
+
+                    ctx.beginPath();
+                    ctx.arc(node.x, node.y, node.radius, 0, Math.PI * 2);
+                    ctx.fillStyle = '#fff';
+                    ctx.shadowColor = '#fff';
+                    ctx.shadowBlur = 5;
+                    ctx.fill();
+                    ctx.shadowBlur = 0;
+                });
+
+                requestAnimationFrame(animate);
+            }
+
+            resize();
+            window.addEventListener('resize', resize);
+            animate();
+        })();
+
+    </script>
+</body>
+</html>
